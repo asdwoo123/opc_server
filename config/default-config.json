@@ -1,0 +1,81 @@
+{
+  "headOffice": "MANN",
+  "branchOffice": "MHUS",
+  "projectName": "test-project",
+  "stationName": "test-station",
+  "endpoint": "opc.tcp://192.168.1.11:4840",
+  "host": "http://seojuneng.ddns.net",
+  "port": 3000,
+  "camera": {
+    "active": false,
+    "width": 1280,
+    "height": 960,
+    "fps": 15,
+    "encoding": "JPEG",
+    "quality": 7
+  },
+  "pantilt": {
+    "active": false,
+    "length": 10,
+    "speed": 1000
+  },
+  "remote": {
+    "active": false,
+    "start": "ns=3;s=\"iButtonStart\"",
+    "reset": "ns=3;s=\"iButtonReset\"",
+    "stop": "stop",
+    "light": "ns=3;s=\"As\".\"bManualLightcurtainEnabled\""
+  },
+  "save": {
+    "active": false,
+    "table": "completed_data",
+    "complete": "ns=3;s=\"As\".\"DATA\".\"State_PC\"",
+    "barcode": "ns=3;s=\"DB_Recipes\".\"current\".\"sDescription\"",
+    "fields": [
+      {
+        "name": "DATA1",
+        "nodeId": "ns=3;s=\"BalluffSignalLightB1\""
+      },
+      {
+        "name": "DATA2",
+        "nodeId": "ns=3;s=\"BalluffSignalLightB2\""
+      },
+      {
+        "name": "DATA3",
+        "nodeId": "ns=3;s=\"BalluffSignalLightB3\""
+      }
+    ]
+  },
+  "nodeInfo": [
+    {
+      "name": "message",
+      "nodeId": "ns=3;s=\"As\".\"DATA\".\"Result\"",
+      "content": ""
+    },
+    {
+      "name": "message",
+      "nodeId": "ns=3;s=\"As\".\"DATA\".\"Done\"",
+      "content": ""
+    },
+    {
+      "name": "TOTAL",
+      "nodeId": "ns=3;s=\"As\".\"C_Total\""
+    },
+    {
+      "name": "Cycle time",
+      "nodeId": "ns=3;s=\"As\".\"Cycle time\""
+    },
+    {
+      "name": "DMC",
+      "nodeId": "ns=3;s=\"As\".\"DATA\".\"DMC\""      
+    },
+    {
+      "name": "OK",
+      "nodeId": "ns=3;s=\"As\".\"DATA\".\"OK_Count\""
+    },
+    {
+      "name": "NOK",
+      "nodeId": "ns=3;s=\"As\".\"DATA\".\"NOK_Count\""
+    }
+  ]
+}

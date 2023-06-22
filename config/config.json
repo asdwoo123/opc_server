@@ -20,14 +20,14 @@
     "speed": 1000
   },
   "remote": {
-    "active": false,
+    "active": true,
     "start": "ns=3;s=\"iButtonStart\"",
     "reset": "ns=3;s=\"iButtonReset\"",
     "stop": "stop",
     "light": "ns=3;s=\"As\".\"bManualLightcurtainEnabled\""
   },
   "save": {
-    "active": false,
+    "active": true,
     "table": "completed_data",
     "complete": "ns=3;s=\"As\".\"DATA\".\"State_PC\"",
     "barcode": "ns=3;s=\"DB_Recipes\".\"current\".\"sDescription\"",

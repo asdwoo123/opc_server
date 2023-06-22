@@ -29,6 +29,16 @@ influx.getDatabaseNames().then(names => {
     }
 });
 
+export async function checkDataExists() {
+    try {
+        const query = `SELECT * FROM completed_data LIMIT 1`;
+        const result = await influx.query(query);
+        return result.groupRows.length > 0;   
+    } catch (error) {
+        return false;
+    }
+}
+
 export async function getData(query) {
     try {
         const result = await influx.query(query);   
@@ -51,3 +61,18 @@ export function saveData(fields) {
     ]);
 }
 
+export function generateDummyData(nodeFields, timestamp) {
+    const fields = {};
+    nodeFields.forEach(({name}) => {
+        const value = Math.floor(Math.random() * 100);
+        fields[name] = value;
+    });
+    
+    influx.writePoints([
+        {
+            measurement,
+            timestamp,
+            fields
+        }
+    ]);
+}

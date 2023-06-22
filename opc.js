@@ -1,6 +1,7 @@
 import opcua from 'node-opcua';
+import { opcEvent } from './utils/event.js';
 import { endpoint } from './config/index.js';
-import { saveData } from './utils/database.js';
+import { saveData, checkDataExists, generateDummyData } from './utils/database.js';
 import { save, nodeInfo } from './config/index.js';
 
 let session = null;
@@ -8,6 +9,34 @@ let subscription = null;
 let monitoredItems = [];
 
 const client = opcua.OPCUAClient.create();
+
+export async function testOPCConnect() {
+    const isExists = await checkDataExists();
+    if (!isExists) {
+        const startDate = new Date('2023-01-01');    
+        const endDate = new Date('2023-06-22');    
+
+        const dates = [];
+        let currentDate = startDate;
+        while (currentDate <= endDate) {
+            dates.push(currentDate);
+            currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+        }
+
+        for (const date of dates) {
+            generateDummyData(save.fields, date);
+        }
+    }
+
+    let count = 0;
+
+    nodeInfo.forEach(({ name }) => {
+        setInterval(() => {
+            opcEvent.emit('data', { name: name, value: count.toString() });
+            count++;
+        }, 1000);
+    });
+}
 
 export async function opcConnect() {
     await client.connect(endpoint);
@@ -113,14 +142,14 @@ export async function monitoringOPC({nodeId, name, content}) {
         if (name === 'NOK') nokCount = data;
         if (name === 'OK' || name === 'NOK') {
             const detect_rate = Math.floor((nokCount / (okCount + nokCount)) * 100) + '%';
-            nodeEvent.emit('node', { name: 'detect_rate', value: detect_rate });
+            opcEvent.emit('data', { name: 'detect_rate', value: detect_rate });
         }
 
         if (typeof dataV !== 'string') {
             data = data.toString();
         }
 
-        nodeEvent.emit('node', { name: name, value: data });
+        opcEvent.emit('data', { name: name, value: data });
     });
 }
 

@@ -1,6 +1,8 @@
 import express from "express";
 import localtunnel from "localtunnel";
 import SocketIO from "socket.io";
+import helmet from 'helmet';
+import morgan from 'morgan';
 import {
   headOffice,
   branchOffice,
@@ -16,15 +18,18 @@ import {
 } from "./config/index.js";
 import { opcEvent } from './utils/event.js';
 import { logger } from './utils/logger.js';
-import { opcConnect, opcDisconnect } from './opc.js';
+import { opcConnect, opcDisconnect, testOPCConnect } from './opc.js';
 import CameraRouter from './routes/cameraRouter.js';
 import PantiltRouter from './routes/pantiltRouter.js';
 import RemoteRouter from './routes/remoteRouter.js';
 import DataRouter from './routes/dataRouter.js';
 import SettingRouter from './routes/settingRouter.js';
 
-opcConnect();
+testOPCConnect();
+// opcConnect();
 const app = express();
+app.use(helmet());
+app.use(morgan('dev'));
 app.use('/camera', CameraRouter);
 app.use('/pantilt', PantiltRouter);
 app.use('/remote', RemoteRouter);

@@ -1,5 +1,6 @@
 import express from 'express';
 import ip from 'ip';
+import { db } from '../config/index.js';
 
 const router = express.Router();
 
@@ -13,9 +14,9 @@ router.post('/setting', (req, res) => {
     db.data = {...db.data, ...setting};
     db.write();
 
-    setTimeout(() => {
+    /* setTimeout(() => {
         exec('pm2 reload app.js');
-    }, 2000);
+    }, 2000); */
     res.statusCode = 200;
     return;
 

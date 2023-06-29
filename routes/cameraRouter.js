@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { application } from 'express';
 import { camera } from '../config/index.js';
 
 const router = express.Router();
@@ -8,6 +8,7 @@ if (camera.active) {
 
     raspberryPiCamera.start(camera);
     raspberryPiCamera.setMaxListeners(1000);
+    let frame;
 
     router.get('/stream', (req, res) => {
         res.writeHead(200, {
@@ -18,6 +19,7 @@ if (camera.active) {
         });
 
         const writeFrame = (frameData) => {
+            frame = frameData;
             res.write('--frame\nContent-Type: image/jpg\nContent-length: ${frameData.length}\n\n');
             res.write(frameData);
         };
@@ -29,6 +31,13 @@ if (camera.active) {
         });
     });
 
+    router.get('/frame', (req, res) => {
+        res.writeHead(200, {
+            'Content-Type': 'image/jpg',
+            'Content-length': frame.length
+        });
+        res.end(frame);
+    });
 }
 
 export default router;

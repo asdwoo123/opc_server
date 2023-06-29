@@ -30,6 +30,18 @@ export class NodePanTilt {
     return tilt;
   }
 
+  isPanServoRunning() {
+    return this.servoPanState;
+  }
+
+  isTiltServoRunning() {
+    return this.servoTiltState;
+  }
+
+  isServoRunning() {
+    return this.servoPanState || this.servoTiltState;
+  }
+
   setPan(angle) {
     this.enablePanServo();
     this.i2c.writeWord(

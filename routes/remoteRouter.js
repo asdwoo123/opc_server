@@ -9,13 +9,24 @@ router.post('/remote', async (req, res) => {
     
     const nodeId = remote[action];
 
-    if (action === 'light') {
-        const isOn = await readOPC(nodeId);
-        if (typeof isOn === 'boolean') {
-            remoteOPC(nodeId, !isOn);
-        }
-    } else {
-        remoteOPC(nodeId, true);
+    remoteOPC(nodeId, true);
+});
+
+router.get('/light', async (req, res) => {
+    const nodeId = remote['light'];
+
+    const isOn = await readOPC(nodeId);
+    return res.json({
+        isOn
+    });
+});
+
+router.post('/light', async (req, res) => {
+    const nodeId = remote['light'];
+
+    const isOn = await readOPC(nodeId);
+    if (typeof isOn === 'boolean') {
+        remoteOPC(nodeId, !isOn);
     }
 });
 

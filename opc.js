@@ -1,7 +1,7 @@
 import opcua from 'node-opcua';
 import { opcEvent } from './utils/event.js';
 import { endpoint } from './config/index.js';
-import { saveData, checkDataExists, generateDummyData } from './utils/database.js';
+import { saveData, checkDataExists, generateDummyData, deleteAllData } from './utils/database.js';
 import { save, nodeInfo } from './config/index.js';
 
 let session = null;
@@ -13,6 +13,7 @@ const client = opcua.OPCUAClient.create();
 export async function testOPCConnect() {
     const isExists = await checkDataExists();
     if (!isExists) {
+
         const startDate = new Date('2023-01-01');    
         const endDate = new Date('2023-06-22');    
 

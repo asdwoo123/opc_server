@@ -3,10 +3,12 @@ import { save } from '../config/index.js';
 
 const measurement = save.table;
 
-const fields = {};
+const fields = {
+    barcode: Influx.FieldType.STRING,
+};
 
 save.fields.forEach((field) => {
-    fields[field.name] = Influx.FieldType['STRING'];
+    fields[field.name] = Influx.FieldType.STRING;
 });
 
 const influx = new Influx.InfluxDB({
@@ -61,8 +63,16 @@ export function saveData(fields) {
     ]);
 }
 
+export function deleteAllData() {
+    influx.query(`DELETE FROM ${measurement}`);
+}
+
+let barcode = 10000000;
+
 export function generateDummyData(nodeFields, timestamp) {
     const fields = {};
+    fields['barcode'] = barcode.toString();
+    barcode += 1;
     nodeFields.forEach(({name}) => {
         const value = Math.floor(Math.random() * 100);
         fields[name] = value;

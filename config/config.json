@@ -7,7 +7,7 @@
   "host": "http://seojuneng.ddns.net",
   "port": 3000,
   "camera": {
-    "active": false,
+    "active": true,
     "width": 1280,
     "height": 960,
     "fps": 15,
@@ -15,7 +15,7 @@
     "quality": 7
   },
   "pantilt": {
-    "active": false,
+    "active": true,
     "length": 10,
     "speed": 1000
   },

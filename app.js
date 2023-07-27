@@ -4,6 +4,18 @@ import SocketIO from "socket.io";
 import helmet from 'helmet';
 import morgan from 'morgan';
 import {
+  db
+} from "./config/index.js";
+import { opcEvent } from './utils/event.js';
+import { logger } from './utils/logger.js';
+import { opcConnect, opcDisconnect, testOPCConnect } from './opc.js';
+import CameraRouter from './routes/cameraRouter.js';
+import PantiltRouter from './routes/pantiltRouter.js';
+import RemoteRouter from './routes/remoteRouter.js';
+import DataRouter from './routes/dataRouter.js';
+import SettingRouter from './routes/settingRouter.js';
+
+const {
   headOffice,
   branchOffice,
   projectName,
@@ -15,15 +27,7 @@ import {
   camera,
   pantilt,
   remote
-} from "./config/index.js";
-import { opcEvent } from './utils/event.js';
-import { logger } from './utils/logger.js';
-import { opcConnect, opcDisconnect, testOPCConnect } from './opc.js';
-import CameraRouter from './routes/cameraRouter.js';
-import PantiltRouter from './routes/pantiltRouter.js';
-import RemoteRouter from './routes/remoteRouter.js';
-import DataRouter from './routes/dataRouter.js';
-import SettingRouter from './routes/settingRouter.js';
+} = db.data;
 
 testOPCConnect();
 // opcConnect();
@@ -41,15 +45,21 @@ const domain = `${headOffice}.${branchOffice}.${projectName}.${stationName}.${uu
 function connectTunnel() {
   localtunnel({ port, subdomain: domain, host }, (err, tunnel) => {
     if (err) {
-      setTimeout(connectToServer, 3000);
+      setTimeout(connectTunnel, 3000);
     } else {
       logger.info(`${host}와 localtunnel이 연결되었습니다.`);  
 
+      tunnel.on("dead", () => {
+        setTimeout(connectTunnel, 3000);
+      });
+
       tunnel.on("close", () => {
-        setTimeout(connectToServer, 3000);
+        console.log('close');
+        setTimeout(connectTunnel, 3000);
       });
       tunnel.on("error", () => {
-        setTimeout(connectToServer, 3000);
+        console.log('error');
+        setTimeout(connectTunnel, 3000);
       });
     }
   });

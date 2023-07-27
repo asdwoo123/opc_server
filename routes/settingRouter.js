@@ -14,9 +14,6 @@ router.post('/setting', (req, res) => {
     db.data = {...db.data, ...setting};
     db.write();
 
-    /* setTimeout(() => {
-        exec('pm2 reload app.js');
-    }, 2000); */
     res.statusCode = 200;
     return;
 

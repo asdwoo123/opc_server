@@ -1,6 +1,8 @@
 import express from 'express';
-import { remote } from '../config/index.js';
+import { db } from '../config/index.js';
 import { readOPC, remoteOPC } from '../opc.js';
+
+const { remote } = db.data;
 
 const router = express.Router();
 
@@ -9,7 +11,20 @@ router.post('/remote', async (req, res) => {
     
     const nodeId = remote[action];
 
-    remoteOPC(nodeId, true);
+    try {
+        if (action === 'light') {
+            const isOn = await readOPC(nodeId);
+            if (typeof isOn === 'boolean') {
+                remoteOPC(nodeId, !isOn);
+            }
+        } else {
+            remoteOPC(nodeId, true);
+        }
+        
+        return res.statusCode = 200;
+    } catch (error) {
+        return res.statusCode = 500;
+    }
 });
 
 router.get('/light', async (req, res) => {

@@ -1,14 +1,22 @@
-import express, { application } from 'express';
-import { camera } from '../config/index.js';
+import express from 'express';
+import { db } from '../config/index.js';
+import { cameraEvent } from '../utils/event.js';
+
+const { camera } = db.data;
 
 const router = express.Router();
 
 if (camera.active) {
     const { default: raspberryPiCamera } = await import('raspberry-pi-camera-native');
 
+    let frame;
     raspberryPiCamera.start(camera);
     raspberryPiCamera.setMaxListeners(1000);
-    let frame;
+
+    raspberryPiCamera.on('frame', (frameData) => {
+        frame = frameData;
+        cameraEvent.emit('frame', frameData);
+    });
 
     router.get('/stream', (req, res) => {
         console.log('stream');
@@ -20,22 +28,21 @@ if (camera.active) {
         });
 
         const writeFrame = (frameData) => {
-            frame = frameData;
             res.write('--frame\nContent-Type: image/jpg\nContent-length: ${frameData.length}\n\n');
             res.write(frameData);
         };
 
-        raspberryPiCamera.on('frame', writeFrame);
+        cameraEvent.on('frame', writeFrame);
 
         req.on('close', () => {
-            raspberryPiCamera.removeListener('frame', writeFrame);
+            cameraEvent.removeListener('frame', writeFrame);
         });
     });
 
-    router.get('/frame', (req, res) => {
+    router.get('/capture', (req, res) => {
         res.writeHead(200, {
             'Content-Type': 'image/jpg',
-            'Content-length': frame.length
+            'Content-length': frame.length,
         });
         res.end(frame);
     });

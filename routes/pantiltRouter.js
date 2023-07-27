@@ -1,7 +1,9 @@
 import express from 'express';
-import { pantilt } from '../config/index.js';
+import { db } from '../config/index.js';
 
 const router = express.Router();
+
+const { pantilt } = db.data;
 
 if (pantilt.active) {
     const { NodePanTilt } = await import('./servo.js');

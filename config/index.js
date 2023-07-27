@@ -11,17 +11,9 @@ const adapter = new JSONFileSync('config/config.json');
 const db = new LowSync(adapter, defaultConfig);
 db.read();
 
-db.read();
 if (!db.data.uuid) {
     db.data.uuid = v4();
     db.write();
 }
 
-const { headOffice, branchOffice, projectName, stationName, 
-    uuid, camera, remote, pantilt, endpoint, host, port, save, nodeInfo } = db.data;
-
-export {
-    db, headOffice, branchOffice, projectName, stationName, 
-    uuid, camera, remote, pantilt, 
-    endpoint, host, port, save, nodeInfo
-};
+export { db };

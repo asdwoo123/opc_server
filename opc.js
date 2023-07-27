@@ -1,8 +1,9 @@
 import opcua from 'node-opcua';
 import { opcEvent } from './utils/event.js';
-import { endpoint } from './config/index.js';
 import { saveData, checkDataExists, generateDummyData, deleteAllData } from './utils/database.js';
-import { save, nodeInfo } from './config/index.js';
+import { db } from './config/index.js';
+
+const { save, nodeInfo, endpoint } = db.data;
 
 let session = null;
 let subscription = null;
@@ -31,12 +32,12 @@ export async function testOPCConnect() {
 
     let count = 0;
 
-    nodeInfo.forEach(({ name }) => {
-        setInterval(() => {
+    setInterval(() => {
+        count++;
+        nodeInfo.forEach(({ name }) => {
             opcEvent.emit('data', { name: name, value: count.toString() });
-            count++;
-        }, 1000);
-    });
+        });
+    }, 1000);
 }
 
 export async function opcConnect() {
@@ -159,7 +160,7 @@ export async function readOPC(nodeId) {
     try {
         return (await the_session.readVariableValue(nodeId)).value.value;
     } catch (error) {
-        return false;
+        throw new Error(error);
     }
 }
 
@@ -179,8 +180,7 @@ export async function remoteOPC(nodeId, value) {
 
     try {
         await session.write(nodesToWrite);
-        return true;
     } catch (error) {
-        return false;
+        throw new Error(error);
     }
 }

@@ -34,10 +34,8 @@ router.get('/save', async (req, res) => {
 
     const result = await getData(query);
 
-    const count = (result[0]) ? result[0][0]['count_barcode'] : 0;
+    const count = (result[0][0]) ? result[0][0]['count_barcode'] : 0;
     const data = (result[1]) ? result[1] : [];
-
-    console.log(data.length);
     
     return res.json({
         count, data

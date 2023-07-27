@@ -1,5 +1,7 @@
 import Influx from 'influx';
-import { save } from '../config/index.js';
+import { db } from '../config/index.js';
+
+const { save } = db.data;
 
 const measurement = save.table;
 

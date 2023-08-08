@@ -3,6 +3,7 @@ import localtunnel from "localtunnel";
 import SocketIO from "socket.io";
 import helmet from 'helmet';
 import morgan from 'morgan';
+import bodyParser from "body-parser";
 import {
   db
 } from "./config/index.js";
@@ -32,6 +33,8 @@ const {
 testOPCConnect();
 // opcConnect();
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(morgan('dev'));
 app.use('/camera', CameraRouter);
@@ -73,6 +76,17 @@ const server = app.listen(port, () => {
 const io = SocketIO(server, { path: `/socket.io` });
 
 const data = {}
+
+/* setInterval(() => {
+  const memoryData = process.memoryUsage();
+  const memoryUsage = {
+    rss: `${memoryData.rss / 1024 / 1024} MB`,
+    heapTotal: `${memoryData.heapTotal / 1024 / 1024} MB`,
+    heapUsed: `${memoryData.heapUsed / 1024 / 1024} MB`,
+    external: `${memoryData.external / 1024 / 1024} MB`,
+  };
+  console.log(memoryUsage);
+}, 500); */
 
 nodeInfo.forEach((node) => {
     data[node['name']] = '';

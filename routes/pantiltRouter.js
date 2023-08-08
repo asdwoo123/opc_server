@@ -11,13 +11,15 @@ if (pantilt.active) {
     nodePantilt.setTilt(0);
     nodePantilt.setPan(0);
 
+    let intervalAction;
+
     router.post('/pantilt', (req, res) => {
         const isRunning = nodePantilt.isServoRunning();
-        if (isRunning) return;
         
         const { action } = req.body;
+
+        if (isRunning && action !== 'stop') return;
         
-        let intervalAction;
         let motorX = nodePantilt.getPan();
         let motorY = nodePantilt.getTilt();
 

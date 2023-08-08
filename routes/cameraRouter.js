@@ -19,7 +19,7 @@ if (camera.active) {
     });
 
     router.get('/stream', (req, res) => {
-        console.log('stream');
+        
         res.writeHead(200, {
             'Cache-Control': 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0',
             Pragma: 'no-cache',
@@ -28,7 +28,7 @@ if (camera.active) {
         });
 
         const writeFrame = (frameData) => {
-            res.write('--frame\nContent-Type: image/jpg\nContent-length: ${frameData.length}\n\n');
+            res.write(`--frame\nContent-Type: image/jpeg\nContent-length: ${frameData.length}\n\n`);
             res.write(frameData);
         };
 

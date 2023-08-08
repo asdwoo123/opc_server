@@ -8,8 +8,8 @@
   "port": 3000,
   "camera": {
     "active": true,
-    "width": 1280,
-    "height": 960,
+    "width": 640,
+    "height": 640,
     "fps": 15,
     "encoding": "JPEG",
     "quality": 7

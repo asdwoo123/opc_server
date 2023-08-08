@@ -1,35 +1,30 @@
-import { pantilt } from './config/index.js';
-import { NodePanTilt } from './routes/servo.js';
+import express from 'express';
+import raspberryPiCamera  from 'raspberry-pi-camera-native';
 
-const nodePantilt = new NodePanTilt();
+const app = express();
 
-nodePantilt.setPan(0);
-nodePantilt.setTilt(0);
+const options = {
+    width: 3280,
+    height: 2464,
+    fps: 15,
+    encoding: 'JPEG',
+    quality: 75
+  }
 
-const intervalAction = setInterval(() => {
-    let motorX = nodePantilt.getPan();
-    let motorY = nodePantilt.getTilt();
+ raspberryPiCamera.start(options);
 
-    if (motorX > 90) { clearInterval(intervalAction); }
+ let frame;
 
-    motorX += 10;
-    nodePantilt.setPan(motorX);
-}, 1000);
+ raspberryPiCamera.on('frame', (frameData) => {
+    frame = frameData;
+});
 
-/* setInterval(() => {
-    console.log(nodePantilt.isPanServoRunning());
-}, 300); */
+app.get('/capture', (req, res) => {
+    res.writeHead(200, {
+        'Content-Type': 'image/jpg',
+        'Content-length': frame.length,
+    });
+    res.end(frame);
+});
 
-const intervalAction2 = setInterval(() => {
-    const isPanRunning = nodePantilt.isTiltServoRunning();
-    console.log(isPanRunning);
-    /* if (isPanRunning) return;
-    let motorX = nodePantilt.getPan();
-    let motorY = nodePantilt.getTilt();
-    console.log('motorY', motorY);
-
-    if (motorY > 90) { clearInterval(intervalAction2); }
-
-    motorY += 10;
-    nodePantilt.setTilt(motorY); */
-}, 1000);
+app.listen(3000, () => console.log('서버가 시작되었습니다!'));
